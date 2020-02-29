@@ -1,10 +1,15 @@
+(function(obj) {
 "use strict";
 
+const Reader = require("zip-js/WebContent/zip.js").zip.Reader
+
 const prefix = "https://siasky.net/skynet/skyfile/";
-var Reader = zip.Reader;
 
 function SkynetReader(hash, path) {
   var that = this;
+
+  function init(callback, onerror) {
+  }
 
   function readArrayBuffer(index, length, callback, onerror) {
     const url = prefix + hash
@@ -21,8 +26,13 @@ function SkynetReader(hash, path) {
     }, onerror);
   }
 
+  that.init = init;
   that.size = 0; // needed?
   that.readUint8Array = readUint8Array;
 }
 SkynetReader.prototype = new Reader();
 SkynetReader.prototype.constructor = SkynetReader;
+
+obj.my = { SkynetReader: SkynetReader }
+
+})(this)

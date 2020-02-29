@@ -1,5 +1,5 @@
-const zip = require("zip-js/WebContent/zip.js")
-const SkynetReader = require("./myreader.js").SkynetReader
+const zip = require("zip-js/WebContent/zip.js").zip
+const SkynetReader = require("./myreader.js").my.SkynetReader
 
 const express = require('express')
 const app = express()
