@@ -10,7 +10,6 @@
     var that = this;
 
     function init(callback, onerror) {
-    console.log(url) // FIXME
       var request = new XMLHttpRequest();
       request.addEventListener("load", function() {
         that.size = Number(request.getResponseHeader("Content-Length"));
