@@ -2,7 +2,7 @@
   "use strict";
 
   var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest
-  const zip = require("zip-js/WebContent/zip.js").zip
+  const zip = require("./zip.js").zip
 //   const HttpRangeReader = require("zip-js/WebContent/zip-ext.js").HttpRangeReader
   const Reader = zip.Reader
 
