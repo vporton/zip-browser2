@@ -2,23 +2,40 @@
   "use strict";
 
   const axios = require('axios').default;
-  const Reader = require("zip-js/WebContent/zip.js").zip.Reader
+  const zip = require("zip-js/WebContent/zip.js").zip
+//   const HttpRangeReader = require("zip-js/WebContent/zip-ext.js").HttpRangeReader
+  const Reader = zip.Reader
 
-  const prefix = "https://siasky.net/skynet/skyfile/";
-
-  function SkynetReader(hash, path) {
+  function HttpRangeReader(url, bust) {
     var that = this;
 
     function init(callback, onerror) {
+      var request = new XMLHttpRequest();
+      request.addEventListener("load", function() {
+        that.size = Number(request.getResponseHeader("Content-Length"));
+
+        // Some HTTP servers do not emit the Accept-Ranges header :(
+        if (true || request.getResponseHeader("Accept-Ranges") == "bytes")
+                callback();
+        else
+                onerror(ERR_HTTP_RANGE);
+      }, false);
+      request.addEventListener("error", onerror, false);
+      request.open("HEAD", url + (bust ? ("?b=" + Date.now()) : ""));
+      request.send();
     }
 
     function readArrayBuffer(index, length, callback, onerror) {
-      const url = prefix + hash
-
-      return new Promise((resolve, reject) => {
-        axios.get(url, { responseType: 'stream' })
-          .then((response) => callback(response))
-      })
+      var request = new XMLHttpRequest();
+      request.open("GET", url);
+      request.responseType = "arraybuffer";
+      request.setRequestHeader("Range", "bytes=" + index + "-" + (index + length - 1));
+      request.setRequestHeader("If-None-Match", "webkit-no-cache");
+      request.addEventListener("load", function() {
+        callback(request.response);
+      }, false);
+      request.addEventListener("error", onerror, false);
+      request.send();
     }
 
     function readUint8Array(index, length, callback, onerror) {
@@ -27,11 +44,19 @@
       }, onerror);
     }
 
+    that.size = 0;
     that.init = init;
-    that.size = 0; // needed?
     that.readUint8Array = readUint8Array;
   }
-  SkynetReader.prototype = new Reader();
+  HttpRangeReader.prototype = new Reader();
+  HttpRangeReader.prototype.constructor = HttpRangeReader;
+
+  const prefix = "https://siasky.net/skynet/skyfile/";
+
+  function SkynetReader(hash, path) {
+    return HttpRangeReader(prefix+hash+path, false)
+  }
+  SkynetReader.prototype = new HttpRangeReader();
   SkynetReader.prototype.constructor = SkynetReader;
 
   obj.my = { SkynetReader: SkynetReader }
