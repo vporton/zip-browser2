@@ -1,6 +1,7 @@
 (function(obj) {
 "use strict";
 
+const axios = require('axios').default;
 const Reader = require("zip-js/WebContent/zip.js").zip.Reader
 
 const prefix = "https://siasky.net/skynet/skyfile/";

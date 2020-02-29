@@ -10,10 +10,12 @@ app.get(/.*/, (req, res) => {
   let [ hash, path ] = reqpath.split(/\//, 2)
 
   zip.createReader(new SkynetReader(hash, path), function(reader) {
+  console.log('(hash, path)', hash, '#', path)
 
     // get all entries from the zip
     reader.getEntries(function(entries) {
       for (var i in entries) {
+        console.log('entries[i]', entries[i])
         
         if (!entries[i].filename === path) continue;
 
