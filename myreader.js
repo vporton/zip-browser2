@@ -10,15 +10,16 @@
     var that = this;
 
     function init(callback, onerror) {
+    console.log(url) // FIXME
       var request = new XMLHttpRequest();
       request.addEventListener("load", function() {
         that.size = Number(request.getResponseHeader("Content-Length"));
 
         // Some HTTP servers do not emit the Accept-Ranges header :(
         if (true || request.getResponseHeader("Accept-Ranges") == "bytes")
-                callback();
+          callback();
         else
-                onerror(ERR_HTTP_RANGE);
+          onerror(ERR_HTTP_RANGE);
       }, false);
       request.addEventListener("error", onerror, false);
       request.open("HEAD", url + (bust ? ("?b=" + Date.now()) : ""));
@@ -51,10 +52,10 @@
   HttpRangeReader.prototype = new Reader();
   HttpRangeReader.prototype.constructor = HttpRangeReader;
 
-  const prefix = "https://siasky.net/skynet/skyfile/";
+  const prefix = "https://siasky.net/";
 
   function SkynetReader(hash, path) {
-    return HttpRangeReader(prefix+hash+path, false)
+    return HttpRangeReader(prefix+hash, false)
   }
   SkynetReader.prototype = new HttpRangeReader();
   SkynetReader.prototype.constructor = SkynetReader;

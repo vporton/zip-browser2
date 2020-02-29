@@ -9,7 +9,8 @@ app.get(/.*/, (req, res) => {
   const reqpath = req.path.substring(1)
   let [ hash, path ] = reqpath.split(/\//, 2)
 
-  zip.createReader(new SkynetReader(hash, path), function(reader) {
+  const reader = new SkynetReader(hash, path)
+  const callback = function(reader) {
 
     // get all entries from the zip
     reader.getEntries(function(entries) {
@@ -31,7 +32,11 @@ app.get(/.*/, (req, res) => {
         });
       }
     });
-  }, function(error) {
+  }
+  reader.init(callback, function(error) {
+    // onerror callback
+  })
+  zip.createReader(reader, callback, function(error) {
     // onerror callback
   });
 })
