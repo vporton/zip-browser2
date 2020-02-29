@@ -55,7 +55,7 @@
   const prefix = "https://siasky.net/";
 
   function SkynetReader(hash, path) {
-    return HttpRangeReader(prefix+hash, false)
+    return new HttpRangeReader(prefix+hash, false)
   }
   SkynetReader.prototype = new HttpRangeReader();
   SkynetReader.prototype.constructor = SkynetReader;

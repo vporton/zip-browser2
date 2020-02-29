@@ -15,7 +15,7 @@ app.get(/.*/, (req, res) => {
     // get all entries from the zip
     reader.getEntries(function(entries) {
       for (var i in entries) {
-        console.log('entries[i]', entries[i])
+        console.log('entries[i]', entries[i]) // FIXME
         
         if (!entries[i].filename === path) continue;
 
